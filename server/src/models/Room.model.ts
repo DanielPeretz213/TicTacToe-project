@@ -42,7 +42,7 @@ const RoomSchema = new Schema<RoomProps>({
   },
   boards: {
     type: [String],
-    default: Array(9).fill(null),
+    default: [null, null, null, null, null, null, null, null, null],
   },
 
   currentTurn: {
