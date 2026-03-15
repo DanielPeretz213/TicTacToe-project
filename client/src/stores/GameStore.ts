@@ -43,6 +43,13 @@ class GameStore {
     joinRoom(code:string){
         this.socket.emit("roon:join",code)
     }
+
+    makeMove(index: number){
+        if(!this.isMyTurn || this.board[index] !== null || this.status !== "playing"){
+            return;
+        }
+        this.socket.emit("game:move", {roomcode: this.roomCode, index})
+    }
 }
 
 export const gameStore = new GameStore();
