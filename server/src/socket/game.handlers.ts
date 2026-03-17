@@ -10,13 +10,11 @@ export const registerGameHandlers = (io:Server, socket:Socket) =>{
         const player =  findRoom.players.find(p => p.socketId === socket.id);
 
         if(player?.symbol !== findRoom.currentTurn){
-            socket.emit("error", "is not your turn");
-            return;
+           return socket.emit("error", "is not your turn");
         }
 
         if(findRoom.boards[index] !== null){
-            socket.emit("error", " the sell already black ")
-            return;
+            return socket.emit("error", " the sell already black ");
         }
         findRoom.boards[index] = player!.symbol;
         findRoom.currentTurn = findRoom.currentTurn === "O" ? "X" : "O";
@@ -34,5 +32,9 @@ export const registerGameHandlers = (io:Server, socket:Socket) =>{
                 winner: statusWinner
             });
         }
-    })
+    });
+
+    socket.on("game:update",() =>{});
+
+    socket.on("game:finished",() =>{})
 }
