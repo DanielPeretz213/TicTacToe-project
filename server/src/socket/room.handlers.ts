@@ -1,12 +1,12 @@
 import { Server, Socket } from "socket.io";
 import { generateRoomCode } from "../utils/generateRoomCode";
-import Room from "../models/Room.model";
+import RoomModel from "../models/Room.model";
 
 export const registerRoomHandlers = (io: Server, socket: Socket) => {
   socket.on("room:create", async () => {
     try {
       const roomCode: string = generateRoomCode();
-      const newRoom = new Room({
+      const newRoom = new RoomModel({
         roomCode,
         players: [{ socketId: socket.id, symbol: "X" }],
         currentTurn: "X",
@@ -26,7 +26,7 @@ export const registerRoomHandlers = (io: Server, socket: Socket) => {
 
   socket.on("room:join", async (roomCode: string) => {
     try {
-      const roomToJoin = await Room.findOne({ roomCode });
+      const roomToJoin = await RoomModel.findOne({ roomCode });
 
       if (!roomToJoin) {
         return socket.emit(
@@ -52,8 +52,16 @@ export const registerRoomHandlers = (io: Server, socket: Socket) => {
     }
   });
 
-  socket.on("room:leave", (roomId: string) => {
-    socket.leave(roomId);
-    io.to(roomId).emit("room:playerLeft", socket.id);
+  socket.on("room:leave", async (roomId: string) => {
+    try {
+      const findRoom = await RoomModel.findOne({ roomCode: roomId });
+      if (!findRoom) {
+        return socket.emit("error", "can't find room to left");
+      }
+      socket.leave(roomId);
+      io.to(roomId).emit("room:playerLeft", socket.id);
+    } catch (error) {
+      socket.emit("error", "faild to leave room");
+    }
   });
 };
