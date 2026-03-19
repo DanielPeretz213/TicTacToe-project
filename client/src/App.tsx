@@ -1,18 +1,19 @@
-import { observer} from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 import { gameStore } from "./stores/GameStore";
+import { Lobby } from "./components/Lobby";
+import { GameBoard } from "./components/GameBoard";
+import { ToastContainer } from "react-toastify";
 
 const App = observer(() => {
-    return(
-        <div>
-            <h1>Tic Tac Toe </h1>
-            {gameStore.roomCode ? (
-                <p>room code is:{gameStore.roomCode}</p> 
-            ) : (
-                <button onClick={()=> gameStore.createRoom()}>create room</button>
-            ) }
-            
-       </div>
-    )
+  return (
+    <div className="App" style={{ padding: "20px" }}>
+      {!gameStore.roomCode && <Lobby />}
+
+      {gameStore.roomCode && <GameBoard />}
+
+      <ToastContainer position="bottom-right" autoClose={3000} />
+    </div>
+  );
 });
 
 export default App;

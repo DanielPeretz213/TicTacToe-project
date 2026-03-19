@@ -1,10 +1,10 @@
 import { Server, Socket } from "socket.io";
-import Room from "../models/Room.model";
+import RoomModel from "../models/Room.model";
 import checkWinner from "../utils/checkWinner";
 
 export const registerGameHandlers = (io:Server, socket:Socket) =>{
     socket.on("game:move", async (roomCode:string, index:number) => {
-        const findRoom = await Room.findOne({roomCode});
+        const findRoom = await RoomModel.findOne({roomCode});
         if(!findRoom || findRoom.status !== "playing") return;
 
         const player =  findRoom.players.find(p => p.socketId === socket.id);

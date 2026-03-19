@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { toast } from "react-toastify";
 import { io, Socket } from "socket.io-client";
 
 class GameStore {
@@ -43,10 +44,10 @@ class GameStore {
 
     this.socket.on("game:finished", ({ winner }: { winner: string })=>{
         if(winner === "draw"){
-            alert("is draw!");
+            toast.info("is draw! 🤝");
         }else{
-            const result = winner === this.mySymbol ? "you win🎉" : "you loss";
-            alert(result);
+            winner === this.mySymbol ? toast.success("you win🎉🏆") : toast.error("you loss");
+            
         }
     });
   }

@@ -1,4 +1,4 @@
-import { Button, Card, Divider, Input, Space, Tag, Typography } from "antd";
+import { Button, Card, Divider, Input, Space, Typography } from "antd";
 import { observer } from "mobx-react-lite";
 import { gameStore } from "../stores/GameStore";
 import { LoginOutlined, RocketOutlined } from "@ant-design/icons";
@@ -15,12 +15,12 @@ export const Lobby = observer(() => {
           alignItems: "center",
         }}
       >
-        <Title level={2}>Tic Tac Toe zGame Online</Title>
+        <Title level={2}>Tic Tac Toe Game Online</Title>
         <Text type="secondary">Create room or join to your friend room!</Text>
 
         <Divider />
 
-        <Space direction="vertical" size="large" style={{ width: "100%" }}>
+        <Space orientation="vertical" size="large" style={{ width: "100%" }}>
           <Button
             type="primary"
             size="large"
