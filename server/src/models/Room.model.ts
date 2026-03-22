@@ -22,7 +22,7 @@ const PlayerSchema = new Schema<Player>({
 export interface RoomProps {
   roomCode: string;
   players: Player[];
-  boards: (SymbolType | null)[];
+  board: (SymbolType | null)[];
   currentTurn: SymbolType;
   status: "waiting" | "playing" | "finished";
   winner: SymbolType | "draw";
@@ -40,7 +40,7 @@ const RoomSchema = new Schema<RoomProps>({
     validate: [(arr: Player[]) => arr.length <= 2, "max 2 players"],
     default: [],
   },
-  boards: {
+  board: {
   type: [String],
   default: [null, null, null, null, null, null, null, null, null],
 },

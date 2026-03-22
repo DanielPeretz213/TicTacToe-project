@@ -4,6 +4,7 @@ import RoomModel from "../models/Room.model";
 
 export const registerRoomHandlers = (io: Server, socket: Socket) => {
   socket.on("room:create", async () => {
+    console.log(2)
     try {
       const roomCode: string = generateRoomCode();
       const newRoom = new RoomModel({
@@ -25,6 +26,7 @@ export const registerRoomHandlers = (io: Server, socket: Socket) => {
   });
 
   socket.on("room:join", async (roomCode: string) => {
+    console.log(1)
     try {
       const roomToJoin = await RoomModel.findOne({ roomCode });
 
@@ -42,6 +44,7 @@ export const registerRoomHandlers = (io: Server, socket: Socket) => {
       roomToJoin.players.push({ socketId: socket.id, symbol: "O" });
       roomToJoin.status = "playing";
 
+      console.log(roomToJoin);
       await roomToJoin.save();
 
       socket.join(roomCode);

@@ -7,9 +7,8 @@ import { ToastContainer } from "react-toastify";
 const App = observer(() => {
   return (
     <div className="App" style={{ padding: "20px" }}>
-      {!gameStore.roomCode && <Lobby />}
+      {!gameStore.roomCode ? <Lobby />: <GameBoard />}
 
-      {gameStore.roomCode && <GameBoard />}
 
       <ToastContainer position="bottom-right" autoClose={3000} />
     </div>
