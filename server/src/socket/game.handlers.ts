@@ -45,7 +45,23 @@ export const registerGameHandlers = (io: Server, socket: Socket) => {
     },
   );
 
-  socket.on("game:update", () => {});
+  socket.on("game:restart", async (roomCode:string) => {
+    try{
+        const findRoom = await RoomModel.findOne({roomCode});
 
-  socket.on("game:finished", () => {});
+        if(!findRoom){
+            return socket.emit("error","room not found");
+        }
+        findRoom.board = Array(9).fill(null);
+        findRoom.status = "playing";
+        findRoom.winner = "draw";
+
+        findRoom.save();
+
+        io.to(roomCode).emit("game:update", findRoom);
+    }catch(err){
+        console.error("restart error ", err);
+    }
+  });
+
 };

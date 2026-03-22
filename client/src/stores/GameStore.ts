@@ -61,7 +61,6 @@ class GameStore {
   }
 
   joinRoom(code: string) {
-    console.log("sendto rooom:join");
     this.socket.emit("room:join", code);
   }
 
@@ -74,6 +73,12 @@ class GameStore {
       return;
     }
     this.socket.emit("game:move", { roomCode: this.roomCode, index });
+  }
+  restart(){
+    if(this.status !== "finished"){
+        return  
+    }
+    this.socket.emit("game:restart", this.roomCode )
   }
 }
 
