@@ -46,8 +46,11 @@ export const GameBoard = observer(() => {
               </Button>
             ))}
         </div>
+
+        <Button color="blue" onClick={() => gameStore.leaveRoom()}>Back to Home</Button>
+
         {gameStore.status === "finished" ? (
-          <Button onClick={() => gameStore.restart()}>restart</Button>
+          <Button color="blue" onClick={() => gameStore.restart()}>restart</Button>
         ):""}
       </Card>
     </div>

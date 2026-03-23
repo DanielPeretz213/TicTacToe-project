@@ -37,6 +37,7 @@ class GameStore {
 
     this.socket.on("error", (msg: string) => {
       this.error = msg;
+      toast.error(msg);
     });
 
     this.socket.on("game:update", (roomData: any) => {
@@ -54,6 +55,11 @@ class GameStore {
           : toast.error("you loss");
       }
     });
+
+    this.socket.on("game:closed", () =>{
+        this.resetToLobby();
+        toast.info("the game is cloased because the second player was left");
+    })
   }
 
   createRoom() {
@@ -74,11 +80,26 @@ class GameStore {
     }
     this.socket.emit("game:move", { roomCode: this.roomCode, index });
   }
-  restart(){
-    if(this.status !== "finished"){
-        return  
+
+  restart() {
+    if (this.status !== "finished") {
+      return;
     }
-    this.socket.emit("game:restart", this.roomCode )
+    this.socket.emit("game:restart", this.roomCode);
+  }
+
+  resetToLobby() {
+    this.roomCode = "";
+    this.board = Array(9).fill(null);
+    this.mySymbol = null;
+    this.isMyTurn = false;
+    this.status = "waiting";
+    this.error = null;
+  }
+
+  leaveRoom(){
+    this.socket.emit("room:leave", this.roomCode);
+    //this.resetToLobby();
   }
 }
 
