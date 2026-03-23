@@ -52,11 +52,14 @@ export const registerGameHandlers = (io: Server, socket: Socket) => {
         if(!findRoom){
             return socket.emit("error","room not found");
         }
+        if(findRoom.players.length < 2){
+            return socket.emit("error","can't  restart the game becuse the oter pleyer was left");
+        }
         findRoom.board = Array(9).fill(null);
         findRoom.status = "playing";
         findRoom.winner = "draw";
 
-        findRoom.save();
+        await findRoom.save();
 
         io.to(roomCode).emit("game:update", findRoom);
     }catch(err){
