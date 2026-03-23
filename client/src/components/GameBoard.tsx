@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { Button, Card, Tag, Typography } from "antd";
 import { gameStore } from "../stores/GameStore";
+import { HomeOutlined, ReloadOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -11,47 +12,89 @@ export const GameBoard = observer(() => {
         title={<Title level={4}>Room: {gameStore.roomCode}</Title>}
         extra={<Tag color="blue">{gameStore.status.toUpperCase()}</Tag>}
       >
-        <div style={{marginBottom: 20}}>
-            {gameStore.isMyTurn ? (
-                <Tag color="green" style={{fontSize:"1.1rm", padding: "5px 15px"}}>Your Turn{gameStore.mySymbol}</Tag>
-            ) :(
-                <Tag color="orange" style={{fontSize:"1.1rm", padding: "5px 15px"}}>Opponent's Turn...</Tag>
-            )}
+        <div style={{ marginBottom: 20 }}>
+          {gameStore.isMyTurn ? (
+            <Tag
+              color="green"
+              style={{ fontSize: "1.1rm", padding: "5px 15px" }}
+            >
+              Your Turn{gameStore.mySymbol}
+            </Tag>
+          ) : (
+            <Tag
+              color="orange"
+              style={{ fontSize: "1.1rm", padding: "5px 15px" }}
+            >
+              Opponent's Turn...
+            </Tag>
+          )}
         </div>
 
         <div
-        style={{
+          style={{
             display: "grid",
-            gridTemplateColumns:"repeat(3, 1fr)",
-            gap: "12px"
-        }}>
-            {gameStore.board.map((cell,index) => (
-                <Button
-                key={index}
-                onClick={()=>gameStore.makeMove(index)}
-                disabled={!!cell || !gameStore.isMyTurn || gameStore.status === "finished"}
-                style={{
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "12px",
+          }}
+        >
+          {gameStore.board.map((cell, index) => (
+            <Button
+              key={index}
+              onClick={() => gameStore.makeMove(index)}
+              disabled={
+                !!cell || !gameStore.isMyTurn || gameStore.status === "finished"
+              }
+              style={{
                 height: "100px",
                 fontSize: "2.5rem",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: "8px",
-                background: cell ? "#f5f5f5" : "#fff"
+                background: cell ? "#f5f5f5" : "#fff",
               }}
-              >
-                <span style={{ color: cell === 'X' ? '#1890ff' : '#f5222d' }}>
-                    {cell}
-                </span>
-              </Button>
-            ))}
+            >
+              <span style={{ color: cell === "X" ? "#1890ff" : "#f5222d" }}>
+                {cell}
+              </span>
+            </Button>
+          ))}
         </div>
 
-        <Button color="blue" onClick={() => gameStore.leaveRoom()}>Back to Home</Button>
+        <div style={{ display: "flex", gap: "16px", alignItems: "center", margin: "10px"}}>
+          <Button
+            type="primary"
+            size="large"
+            icon={<HomeOutlined />}
+            onClick={() => gameStore.leaveRoom()}
+            style={{
+              borderRadius: "8px",
+              fontWeight: "bold",
+              padding: "0 30px",
+              height: "45px",
+            }}
+          >
+            Back to Home
+          </Button>
 
-        {gameStore.status === "finished" ? (
-          <Button color="blue" onClick={() => gameStore.restart()}>restart</Button>
-        ):""}
+          {gameStore.status === "finished" && (
+            <Button
+              type="primary"
+              icon={<ReloadOutlined />}
+              size="large"
+              onClick={() => gameStore.restart()}
+              style={{
+                backgroundColor: "#52c41a",
+                borderColor: "#52c41a",
+                borderRadius: "8px",
+                fontWeight: "600",
+                boxShadow: "0 2px 0 rgba(0, 0, 0, 0.045)",
+              }}
+            >
+              Play Again
+            </Button>
+          )}
+        </div>
       </Card>
     </div>
   );
