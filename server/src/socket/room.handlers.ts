@@ -61,45 +61,33 @@ export const registerRoomHandlers = (io: Server, socket: Socket) => {
       io.to(roomId).emit("game:closed");
       await RoomModel.deleteOne({ _id: findRoom._id });
       socket.leave(roomId);
-      
-      console.log(`User ${socket.id} manually left room ${roomId} - Room deleted`);
+
+      console.log(
+        `User ${socket.id} manually left room ${roomId} - Room deleted`,
+      );
     } catch (error) {
       socket.emit("error", "faild to leave room");
     }
   });
 
-  socket.on("dis", async ()=>{
-    console.log("user disconnect:",socket.id);
-    const findRoom = await RoomModel.findOne({"players.socketId": socket.id});
+  socket.on("disconnect", async () => {
+    try {
+      console.log("user disconnect:", socket.id);
+      const findRoom = await RoomModel.findOne({
+        "players.socketId": socket.id,
+      });
 
-    if(findRoom){
-      if(findRoom.status !== "finished"){
-        findRoom.status = "finished";
+      if (findRoom) {
+        await RoomModel.deleteOne({ _id: findRoom._id });
+
+        socket
+          .to(findRoom.roomCode)
+          .emit("error", "the other player was left!");
+        socket.to(findRoom.roomCode).emit("game:closed");
       }
-
-      findRoom.players.filter((p) => p.socketId === socket.id);
-      await findRoom.save();
-      
-      io.to(findRoom.roomCode).emit("game:update",findRoom);
-      io.to(findRoom.roomCode).emit("error","the other player was left!");
+    } catch (error) {
+      console.error("Error in departure:", error);
+      return socket.emit("error", "sasamting went wrong with disconnect");
     }
   });
-
-  socket.on("disconnect", async ()=>{
-    try{
-      console.log("user disconnect:",socket.id);
-    const findRoom = await RoomModel.findOne({"players.socketId": socket.id});
-
-    if(findRoom){
-      await RoomModel.deleteOne({_id: findRoom._id});
-      
-      socket.to(findRoom.roomCode).emit("error","the other player was left!");
-      socket.to(findRoom.roomCode).emit("game:closed");
-      
-    }
-    }catch(error){
-      console.error("Error in departure:", error);
-      return socket.emit("error","sasamting went wrong with disconnect");
-    }
-  })
 };

@@ -45,26 +45,28 @@ export const registerGameHandlers = (io: Server, socket: Socket) => {
     },
   );
 
-  socket.on("game:restart", async (roomCode:string) => {
-    try{
-        const findRoom = await RoomModel.findOne({roomCode});
+  socket.on("game:restart", async (roomCode: string) => {
+    try {
+      const findRoom = await RoomModel.findOne({ roomCode });
 
-        if(!findRoom){
-            return socket.emit("error","room not found");
-        }
-        if(findRoom.players.length < 2){
-            return socket.emit("error","can't  restart the game becuse the oter pleyer was left");
-        }
-        findRoom.board = Array(9).fill(null);
-        findRoom.status = "playing";
-        findRoom.winner = "draw";
+      if (!findRoom) {
+        return socket.emit("error", "room not found");
+      }
+      if (findRoom.players.length < 2) {
+        return socket.emit(
+          "error",
+          "can't  restart the game becuse the oter pleyer was left",
+        );
+      }
+      findRoom.board = Array(9).fill(null);
+      findRoom.status = "playing";
+      findRoom.winner = "draw";
 
-        await findRoom.save();
+      await findRoom.save();
 
-        io.to(roomCode).emit("game:update", findRoom);
-    }catch(err){
-        console.error("restart error ", err);
+      io.to(roomCode).emit("game:update", findRoom);
+    } catch (err) {
+      console.error("restart error ", err);
     }
   });
-
 };
