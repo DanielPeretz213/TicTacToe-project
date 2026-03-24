@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import { toast } from "react-toastify";
-import { io, Socket } from "socket.io-client";
+import { Socket } from "socket.io-client";
+import socket from "../services/socket";
 
 class GameStore {
   socket: Socket;
@@ -12,7 +13,7 @@ class GameStore {
   error: string | null = null;
 
   constructor() {
-    this.socket = io("http://localhost:3000");
+    this.socket = socket;
     makeAutoObservable(this);
     this.setupListeners();
   }
@@ -37,6 +38,7 @@ class GameStore {
 
     this.socket.on("error", (msg: string) => {
       this.error = msg;
+      console.error(msg);
       toast.error(msg);
     });
 
@@ -52,13 +54,13 @@ class GameStore {
       } else {
         winner === this.mySymbol
           ? toast.success("you win🎉🏆")
-          : toast.error("you loss");
+          : toast.info("you loss, maybe next time!");
       }
     });
 
     this.socket.on("game:closed", () =>{
         this.resetToLobby();
-        toast.info("the game is cloased because the second player was left");
+        toast.info("the game is cloased, because the second player was left");
     })
   }
 

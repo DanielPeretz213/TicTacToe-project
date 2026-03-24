@@ -35,15 +35,17 @@ const RoomSchema = new Schema<RoomProps>({
     required: true,
     unique: true,
   },
+
   players: {
     type: [PlayerSchema],
     validate: [(arr: Player[]) => arr.length <= 2, "max 2 players"],
     default: [],
   },
+  
   board: {
-  type: [String],
-  default: [null, null, null, null, null, null, null, null, null],
-},
+    type: [String],
+    default: [null, null, null, null, null, null, null, null, null],
+  },
 
   currentTurn: {
     type: String,

@@ -1,7 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { registerRoomHandlers } from "./room.handlers";
 import { registerGameHandlers } from "./game.handlers";
-import RoomMod from "../models/Room.model";
 
 
 export const initSocket = (io:Server) => {

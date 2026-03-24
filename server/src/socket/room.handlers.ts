@@ -52,18 +52,18 @@ export const registerRoomHandlers = (io: Server, socket: Socket) => {
     }
   });
 
-  socket.on("room:leave", async (roomId: string) => {
+  socket.on("room:leave", async (roomCode: string) => {
     try {
-      const findRoom = await RoomModel.findOne({ roomCode: roomId });
+      const findRoom = await RoomModel.findOne({ roomCode });
       if (!findRoom) {
         return socket.emit("error", "can't find room to left");
       }
-      io.to(roomId).emit("game:closed");
-      await RoomModel.deleteOne({ _id: findRoom._id });
-      socket.leave(roomId);
+      io.to(roomCode).emit("game:closed");
+      // await RoomModel.deleteOne({ _id: findRoom._id });
+      socket.leave(roomCode);
 
       console.log(
-        `User ${socket.id} manually left room ${roomId} - Room deleted`,
+        `User ${socket.id} manually left room ${roomCode} - Room deleted`,
       );
     } catch (error) {
       socket.emit("error", "faild to leave room");

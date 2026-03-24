@@ -15,8 +15,8 @@ const io = new Server(server, {
   },
 });
 
- connectDB();
- initSocket(io);
+connectDB();
+initSocket(io);
 
 server.listen(process.env.PORT, () => {
   console.log("listen to port", process.env.PORT);
